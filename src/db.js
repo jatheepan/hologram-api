@@ -4,7 +4,7 @@ import knex from 'knex';
 const HOST = 'localhost';
 const USER = 'root';
 const PASS = 'root';
-const DB_NAME = 'book_keeper'
+const DB_NAME = 'hologram'
 
 const mysqlConnection = mysql.createPool({
   connectionLimit: 10,

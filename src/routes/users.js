@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUser, getUsers } from '../modules/user';
+import { getUser, saveUser, getUsers, deleteUser } from '../modules/user';
 
 const routes = Router();
 
@@ -14,6 +14,22 @@ routes.get('/', (req, res, next) => {
 
 routes.get('/:id', (req, res, next) => {
   getUser(req.params.id)
+    .then( data => {
+      res.jsonp({users: data});
+    })
+    .catch(next);
+});
+
+routes.post('/', (req, res, next) => {
+  saveUser(req.body)
+    .then( data => {
+      res.jsonp({users: data});
+    })
+    .catch(next);
+});
+
+routes.delete('/:id', (req, res, next) => {
+  deleteUser(req.params.id)
     .then( data => {
       res.jsonp({users: data});
     })
