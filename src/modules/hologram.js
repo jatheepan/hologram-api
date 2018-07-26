@@ -1,7 +1,7 @@
 import db from '../db';
 const {mysql, knex} = db;
 
-const fields = ['id', 'title', 'description'];
+const fields = ['id', 'title', 'description', 'pictures'];
 
 const saveHologram = (values, pictures) => {
   const {title, description} = values;
@@ -36,14 +36,14 @@ const getHolograms = (page = 1, limit = 20) => {
 };
 
 const getHologram = (id) => {
-  const query = knex.select(...fields).where('id', id).from('hologram');
+  const query = knex.select(...fields).where('id', id).from('holograms').limit(1);
   return new Promise((resolve, reject) => {
     mysql.connect()
       .then(connection => {
         connection.query(query.toString(), (err, data) => {
           connection.release();
           if (err) return reject(err);
-          resolve(data);
+          resolve(data[0]);
         });
       })
   });
