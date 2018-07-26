@@ -21,7 +21,7 @@ const saveHologram = (values, pictures) => {
 
 const getHolograms = (page = 1, limit = 20) => {
   const offset = (page - 1) * limit;
-  const query = knex.select(...fields).offset(offset).limit(limit).from('holograms');
+  const query = knex.select(...fields).offset(offset).limit(limit).from('holograms').orderBy('created_at', 'desc');
 
   return new Promise((resolve, reject) => {
     mysql.connect()
