@@ -3,9 +3,9 @@ const {mysql, knex} = db;
 
 const fields = ['id', 'title', 'description'];
 
-const saveHologram = (values) => {
+const saveHologram = (values, pictures) => {
   const {title, description} = values;
-  const data = {title, description};
+  const data = {title, description, pictures};
   const query = knex('holograms').insert(data);
   return new Promise((resolve, reject) => {
     mysql.connect()
@@ -80,12 +80,39 @@ const updateHologram = (id, values) => {
            });
          });
   });
-
 };
+
+const getHologramCount = () => {
+  const query = knex('holograms').count({total: 'id'});
+  return new Promise((resolve, reject) => {
+    mysql.connect()
+         .then(connection => {
+           connection.query(query.toString(), (err, data) => {
+             connection.release();
+             if(err) return reject(err);
+             resolve(data);
+           })
+         });
+
+  });
+}
+
+const paginated = (page = 1, limit = 20) => {
+  const promises = [getHolograms(page, limit), getHologramCount()];
+  return Promise.all(promises)
+    .then((result) => {
+      return {
+        holograms: result[0],
+        total: result[1][0].total
+      }
+    });
+};
+
 export {
   saveHologram,
   getHologram,
   getHolograms,
   deleteHologram,
-  updateHologram
+  updateHologram,
+  paginated
 };

@@ -5,6 +5,7 @@ const {mysql, knex} = db;
 const query = knex.schema.createTable('holograms', (table) => {
   table.increments();
   table.string('title');
+  table.string('pictures', 500);
   table.string('description');
   table.timestamp('created_at').notNullable().defaultTo(knex.raw('now()'));
   table.timestamp('modified_at').notNullable().defaultTo(knex.raw('now()'));
