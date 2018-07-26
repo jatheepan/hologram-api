@@ -1,10 +1,29 @@
+const path = require('path');
+// import path from 'path';
 import { Router } from 'express';
 import multer from 'multer';
 
 import { getHologram, paginated, saveHologram, deleteHologram, updateHologram } from '../modules/hologram';
 
 const routes = Router();
-const upload = multer({dest: 'uploads/'});
+const storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: (req, file, callback) => {
+    callback(null, file.originalname);
+  }
+});
+const upload = multer({
+  storage: storage,
+  fileFilter:((req, file, callback) => {
+    const allowedTypes = ['.jpg', '.png', '.gif', '.jpeg'];
+    const extension = (path.extname(file.originalname)).toLowerCase();
+
+    if(allowedTypes.indexOf(extension) >= 0) {
+      return callback(null, true);
+    }
+    callback(null, false);
+  })
+});
 
 routes.get('/', (req, res, next) => {
   const {page, limit} = req.query;
