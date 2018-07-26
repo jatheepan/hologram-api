@@ -12,7 +12,7 @@ const saveUser = (values) => {
     mysql.connect()
          .then(connection => {
            connection.query(query.toString(), (err, data) => {
-             connection.end();
+             connection.release();
              if (err) return reject(err);
              resolve(data);
            });
@@ -28,7 +28,7 @@ const getUsers = (page = 1, limit = 20) => {
     mysql.connect()
          .then(connection => {
            connection.query(query.toString(), (err, data) => {
-             connection.end();
+             connection.release();
              if (err) return reject(err);
              resolve(data);
            });
@@ -42,7 +42,7 @@ const getUser = (id) => {
     mysql.connect()
       .then(connection => {
         connection.query(query.toString(), (err, data) => {
-          connection.end();
+          connection.release();
           if (err) return reject(err);
           resolve(data);
         });
@@ -57,7 +57,7 @@ const deleteUser = (id) => {
     mysql.connect()
          .then(connection => {
            connection.query(query.toString(), (err, data) => {
-             connection.end();
+             connection.release();
              if (err) return reject(err);
              resolve(data);
            });
@@ -65,9 +65,31 @@ const deleteUser = (id) => {
   });
 };
 
+const updateUser = (id, values) => {
+  const {first_name, last_name, username} = values;
+  const data = {};
+  if(first_name) data.first_name = first_name;
+  if(last_name) data.last_name = last_name;
+  if(username) data.username = username;
+
+  const query = knex('users').where('id', id).update(data);
+  //TODO: need to check for duplicate username/email
+  return new Promise((resolve, reject) => {
+    mysql.connect()
+         .then(connection => {
+           connection.query(query.toString(), (err, data) => {
+             connection.release();
+             if (err) return reject(err);
+             resolve(data);
+           });
+         });
+  });
+
+};
 export {
   getUsers,
   getUser,
   saveUser,
-  deleteUser
+  deleteUser,
+  updateUser
 };
